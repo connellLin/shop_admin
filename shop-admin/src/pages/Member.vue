@@ -12,9 +12,7 @@
       style="width: 100%; margin-bottom: 20px"
       row-key="id"
       border
-      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-
       <el-table-column
         prop="nickname"
         label="昵称"
@@ -44,28 +42,42 @@
 
 <script>
 import { httpAuth } from "@/utils/http";
+import axios from "axios";
 
 export default {
   data() {
     return {
       tableData: [],
+      page: 1,
+      size: 3,
+      total: 10,
     };
   },
   created() {
     this.getTableData();
   },
   methods: {
-    async getTableData() {
-      let res = await httpAuth.get("/memberlist", {
+    currentChangeFn(page) {
+      this.page = page;
+      this.getAll();
+    },
+    getTableData() {
+      return httpAuth.get("/memberlist", {
         params: {
-          page: 1,
-          size: 21,
+          page: this.page,
+          size: this.size,
         },
       });
-      if (res.code == 200) {
-        console.log(res.list);
-        this.tableData = res.list ? res.list : [];
-      }
+    },
+    getAll() {
+      axios.all([this.getTableData()]).then(
+        axios.spread((res) => {
+          console.log(res);
+          if (res.code == 200) {
+            this.tableData = res.list ? res.list : [];
+          }
+        })
+      );
     },
   },
 };

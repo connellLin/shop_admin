@@ -240,10 +240,8 @@ export default {
     this.getAll();
   },
   beforeDestroy() {
-    if (this.editor) {
-      this.editor.destroy();
-      this.editor = null;
-    }
+    this.editor.destroy();
+    this.editor = null;
   },
   methods: {
     pictureChange(file, fileList) {
@@ -324,7 +322,7 @@ export default {
       axios.all([this.getTableData(), this.getTotal()]).then(
         axios.spread((res1, res2) => {
           console.log(res1, res2);
-          if ((res1.code == 200)) {
+          if ((res1.code = 200)) {
             this.tableData = res1.list ? res1.list : [];
           }
           if (res2.code == 200) {
